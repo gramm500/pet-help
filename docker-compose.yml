@@ -1,0 +1,59 @@
+version: '3.8'
+
+networks:
+  laravel:
+    driver: bridge
+
+services:
+  nginx:
+    build:
+      context: .docker
+      dockerfile: nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - "8080:80"
+      - "9001:9001"
+    volumes:
+      - ./:/var/www/html:delegated
+    depends_on:
+      - php
+    networks:
+      - laravel
+  php:
+    build:
+      context: .docker
+      dockerfile: php/Dockerfile
+      args:
+        user: nikul
+        uid: 1000
+    container_name: php
+    volumes:
+      - ./:/var/www/html
+    ports:
+      - "9000:9000"
+    depends_on:
+      - mysql
+    networks:
+      - laravel
+  node:
+    build:
+      context: .docker
+      dockerfile: node/Dockerfile
+    container_name: node
+    volumes:
+      - ./:/var/www/html
+    depends_on:
+      - php
+    networks:
+      - laravel
+  mysql:
+    image: mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+    networks:
+      - laravel
