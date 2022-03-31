@@ -57,3 +57,5 @@ services:
       MYSQL_USER: ${DB_USERNAME}
     networks:
       - laravel
+    volumes:
+      - ./mysqldata:/var/lib/mysql

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,6 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('register');
 });
-Route::post('/register', [AuthController::class, 'signUp']);
+
+Auth::routes();
+Route::middleware('auth')->get('/play', function (){
+    return view('play');
+});
+
+Route::post('/play', [GameController::class, 'play']);

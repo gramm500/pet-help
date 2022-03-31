@@ -15,9 +15,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table){
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+        Schema::create('rewards', function (Blueprint $table) {
+            $table->id();
+            $table->string('reward_type');
+            $table->string('value');
         });
     }
 
@@ -28,9 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table){
-            $table->removeColumn('first_name');
-            $table->removeColumn('last_name');
-        });
+        Schema::dropIfExists('rewards');
     }
 };

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table){
-            $table->string('first_name')->nullable();
-            $table->string('last_name')->nullable();
+        Schema::create('reward_types', function (Blueprint $table) {
+            $table->id();
+            $table->string('type');
         });
     }
 
@@ -28,9 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table){
-            $table->removeColumn('first_name');
-            $table->removeColumn('last_name');
-        });
+        Schema::dropIfExists('rewards_types');
     }
 };

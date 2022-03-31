@@ -6,5 +6,5 @@
 /.idea
 /vendor
 .env
-
+/mysqldata
 package-lock.json
