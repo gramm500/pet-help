@@ -25,3 +25,5 @@ Route::middleware('auth')->get('/play', function (){
 });
 
 Route::post('/play', [GameController::class, 'play']);
+
+Route::post('/get-reward/{reward}', [GameController::class, 'getReward']);

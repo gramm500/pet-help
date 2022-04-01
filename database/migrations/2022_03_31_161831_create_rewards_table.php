@@ -19,6 +19,12 @@ return new class extends Migration
             $table->id();
             $table->string('reward_type');
             $table->string('value');
+
+            $table->foreignId('user_id')
+                ->references('id')
+                ->on('users')
+                ->cascadeOnDelete()
+                ->cascadeOnUpdate();;
         });
     }
 

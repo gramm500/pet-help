@@ -29,29 +29,36 @@ class RewardTypeFactory extends Factory
         ];
     }
 
-    public function monetary() : RewardTypeFactory
+    public function monetary(): RewardTypeFactory
     {
         return $this->state(function () {
             return [
                 'type' => RewardMonetary::class,
+                'quantity' => 10000,
             ];
         });
     }
 
-    public function loyalty() : RewardTypeFactory
+    public function loyalty(): RewardTypeFactory
     {
         return $this->state(function () {
             return [
                 'type' => RewardLoyalty::class,
+                'quantity' => 1,
             ];
         });
     }
 
-    public function merch() : RewardTypeFactory
+    public function merch(): RewardTypeFactory
     {
         return $this->state(function () {
             return [
                 'type' => RewardMerch::class,
+                'quantity' => [
+                    'cup' => 200,
+                    't-shirt' => 100,
+                    'console' => 20,
+                ],
             ];
         });
     }

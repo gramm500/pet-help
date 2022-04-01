@@ -6,4 +6,4 @@
         @csrf
         <button style="cursor:pointer" type="submit" class="btn btn-primary">Play</button>
     </form>
-</div>>
+</div>

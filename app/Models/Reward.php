@@ -7,6 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
+/**
+ * App\Models\Reward
+ *
+ * @property int $id
+ * @property string $reward_type
+ * @property string $value
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward whereRewardType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward whereValue($value)
+ * @mixin \Eloquent
+ */
 class Reward extends Model
 {
     use HasFactory;
@@ -41,10 +55,15 @@ class Reward extends Model
 
         /** @var RewardInterface $class */
         $class = new $rewardClass;
+        $class->checkAvailability();
         $this->setRewardHelper($class);
         $this->reward_type = $rewardClass;
-        $this->value = 25;
-//        $this->user_id = $user->id;
+        if ($this->reward->checkAvailability() === false) {
+            $this->reward = new RewardLoyalty();
+        }
+        $this->value = $this->reward->getRewardValue();
+        $this->reward->decreaseAvailableReward();
+
         return $this;
     }
 
@@ -57,5 +76,10 @@ class Reward extends Model
     public function getReward()
     {
         return $this->reward->getReward();
+    }
+
+    public function mapRewardType()
+    {
+        return RewardType::REWARDS_MAPPING[$this->reward_type];
     }
 }

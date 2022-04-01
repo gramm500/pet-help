@@ -19,6 +19,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|RewardType whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|RewardType whereType($value)
  * @mixin \Eloquent
+ * @property array $quantity
+ * @method static \Illuminate\Database\Eloquent\Builder|RewardType whereQuantity($value)
  */
 class RewardType extends Model
 {
@@ -32,7 +34,18 @@ class RewardType extends Model
         RewardLoyalty::class,
     ];
 
+    public const REWARDS_MAPPING = [
+        RewardMonetary::class => 'money',
+        RewardMerch::class => 'merch',
+        RewardLoyalty::class => 'points',
+    ];
+
+    protected $casts = [
+        'quantity' => 'array'
+    ];
+
     protected $fillable = [
-        'type'
+        'type',
+        'quantity',
     ];
 }
