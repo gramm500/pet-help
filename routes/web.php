@@ -20,10 +20,14 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::middleware('auth')->get('/play', function (){
+Route::middleware('auth')->get('/play', function () {
     return view('play');
 });
 
-Route::post('/play', [GameController::class, 'play']);
+Route::group(['middleware' => 'auth'], static function () {
+    Route::post('/play', [GameController::class, 'play']);
+    Route::get('/rewards', [GameController::class, 'getRewards']);
+    Route::post('/get-reward/{reward}', [GameController::class, 'getReward']);
+    Route::delete('/delete/{reward}', [GameController::class, 'refuseReward']);
+});
 
-Route::post('/get-reward/{reward}', [GameController::class, 'getReward']);

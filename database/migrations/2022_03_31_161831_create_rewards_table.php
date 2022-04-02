@@ -24,7 +24,9 @@ return new class extends Migration
                 ->references('id')
                 ->on('users')
                 ->cascadeOnDelete()
-                ->cascadeOnUpdate();;
+                ->cascadeOnUpdate();
+
+            $table->softDeletes();
         });
     }
 

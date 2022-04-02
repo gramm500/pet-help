@@ -5,7 +5,9 @@ namespace App\Models;
 use App\Contracts\Models\RewardInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * App\Models\Reward
@@ -20,10 +22,14 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|Reward whereRewardType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Reward whereValue($value)
  * @mixin \Eloquent
+ * @property int $user_id
+ * @method static \Illuminate\Database\Eloquent\Builder|Reward whereUserId($value)
+ * @property-read \App\Models\User $user
  */
 class Reward extends Model
 {
     use HasFactory;
+    use SoftDeletes;
 
     private RewardInterface $reward;
 
@@ -44,12 +50,12 @@ class Reward extends Model
         }
     }
 
-    public function user(): HasOne
+    public function user(): BelongsTo
     {
-      return $this->hasOne('user');
+        return $this->belongsTo(User::class);
     }
 
-    public function createRandomReward(User $user): Reward
+    public function createRandomReward(): Reward
     {
         $rewardClass = RewardType::REWARDS_TYPES[random_int(0, count(RewardType::REWARDS_TYPES) - 1)];
 
@@ -59,7 +65,11 @@ class Reward extends Model
         $this->setRewardHelper($class);
         $this->reward_type = $rewardClass;
         if ($this->reward->checkAvailability() === false) {
-            $this->reward = new RewardLoyalty();
+            if ($this->reward_type === RewardMonetary::class) {
+                $this->reward = $class->convertToPoints();
+            } else {
+                $this->reward = new RewardLoyalty();
+            }
         }
         $this->value = $this->reward->getRewardValue();
         $this->reward->decreaseAvailableReward();
@@ -75,7 +85,7 @@ class Reward extends Model
 
     public function getReward()
     {
-        return $this->reward->getReward();
+        return $this->reward->getReward($this->user);
     }
 
     public function mapRewardType()

@@ -17,7 +17,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->integer('account_number');
-            $table->integer('loyalty')->default(10);
+            $table->integer('points')->default(10);
+            $table->integer('balance')->default(0);
         });
     }
 

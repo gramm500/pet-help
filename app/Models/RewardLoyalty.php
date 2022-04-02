@@ -29,9 +29,10 @@ class RewardLoyalty implements RewardInterface
         $this->getRewardValue();
     }
 
-    public function getReward()
+    public function getReward(User $user)
     {
-
+        $user->points = $this->getRewardValue();
+        $user->save();
     }
 
     public function getRewardValue(): int

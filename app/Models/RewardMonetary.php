@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Contracts\Models\RewardInterface;
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use http\Client;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Monolog\Handler\IFTTTHandler;
 
 /**
  * App\Models\RewardMonetary
@@ -22,23 +22,32 @@ class RewardMonetary implements RewardInterface
     use HasFactory;
 
     private const MONETARY_REWARD_CAP = 100;
+    private const POINTS_WORTH = 0.01;
     private RewardType $type;
     private int $value;
-    private \GuzzleHttp\Client $client;
+    private Client $client;
 
-    public function __construct($value = 0)
+    public function __construct($value = '')
     {
         $this->type = RewardType::where('type', get_class($this))->first();
         $this->setValue($value);
-        $this->client = new \GuzzleHttp\Client();
+        $this->client = new Client();
     }
 
     /**
      * @throws GuzzleException
      */
-    public function getReward()
+    public function getReward(User $user)
     {
-        $this->client->get('');
+       try{
+           //Mock request to bank api or a webhook
+         $result =  $this->client->get(config('services.http.url'), [
+             'user_account' => $user->account_number,
+         ]);
+       } catch (\Exception $exception) {
+           \Log::emergency(" Exception :{$exception->getMessage()} \n User: {$user->id}");
+       }
+       // for now just increase user balance
     }
 
     public function getRewardValue(): int
@@ -60,19 +69,24 @@ class RewardMonetary implements RewardInterface
         $this->type->save();
     }
 
-    public function setValue($value = 0): RewardMonetary
+    public function setValue($value = ''): RewardMonetary
     {
-        if ($value === 0) {
+        if ($value === '') {
             $this->value = random_int(1, self::MONETARY_REWARD_CAP);
             return $this;
         }
-        $this->value = $value;
+        $this->value = (int)$value;
         return $this;
     }
 
     public function readableType()
     {
        return 'money';
+    }
+
+    public function convertToPoints(): float|int
+    {
+        return $this->value * self::POINTS_WORTH;
     }
 }
 

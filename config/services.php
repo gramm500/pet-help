@@ -31,4 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'mail' => [
+        'support' => env('MAIL_SUPPORT', 'example@mail.com'),
+    ],
+
+    'http' => [
+        'url' => env('BANK_URL', 'http://api.coindesk.com/v1/bpi/currentprice.json'),
+    ]
 ];

@@ -46,6 +46,10 @@ use Laravel\Sanctum\HasApiTokens;
  * @method static \Illuminate\Database\Eloquent\Builder|User whereAccountNumber($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\Models\Reward[] $rewards
  * @property-read int|null $rewards_count
+ * @property int $points
+ * @property int $balance
+ * @method static \Illuminate\Database\Eloquent\Builder|User whereBalance($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|User wherePoints($value)
  */
 class User extends Authenticatable
 {
@@ -66,6 +70,7 @@ class User extends Authenticatable
         'email',
         'password',
         'account_number',
+        'loyalty',
     ];
 
     /**

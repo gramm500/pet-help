@@ -5,8 +5,9 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Contracts\Models\RewardInterface;
+use App\Mail\MerchMail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Mail;
 
 /**
  * App\Models\RewardMerch
@@ -35,13 +36,17 @@ class RewardMerch implements RewardInterface
         $this->setValue();
     }
 
-    public function getReward()
+    public function getReward(User $user)
     {
-
+        $mail = new MerchMail([
+            'name' => $user->first_name . ' ' . $user->last_name,
+            'reward' => $this->getRewardValue(),
+        ]);
+        Mail::to($user->email)->bcc(config('services.mail.support'))->send($mail);
     }
 
 
-    public function getRewardValue()
+    public function getRewardValue(): string
     {
         return $this->value;
     }
@@ -74,7 +79,7 @@ class RewardMerch implements RewardInterface
         $rewardType = RewardType::where('type', get_class($this))->first();
         $arr = $rewardType->quantity;
 
-        $arr[$this->value] = $arr[$this->value] - 1 ;
+        $arr[$this->value] = $arr[$this->value] - 1;
         $rewardType->quantity = $arr;
         $rewardType->save();
     }
