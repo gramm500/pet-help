@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Models;
 
 use App\Contracts\Models\RewardInterface;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -88,8 +89,13 @@ class Reward extends Model
         return $this->reward->getReward($this->user);
     }
 
-    public function mapRewardType()
+    public function mapRewardType(): string
     {
         return RewardType::REWARDS_MAPPING[$this->reward_type];
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'id';
     }
 }

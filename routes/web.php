@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\GameController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,6 +27,6 @@ Route::group(['middleware' => 'auth'], static function () {
     Route::post('/play', [GameController::class, 'play']);
     Route::get('/rewards', [GameController::class, 'getRewards']);
     Route::post('/get-reward/{reward}', [GameController::class, 'getReward']);
-    Route::delete('/delete/{reward}', [GameController::class, 'refuseReward']);
+    Route::post('/delete/{reward}', [GameController::class, 'refuseReward']);
 });
 
